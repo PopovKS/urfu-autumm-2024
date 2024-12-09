@@ -7,7 +7,7 @@ public interface IReadOnlyRepository<TAggregateRoot> where TAggregateRoot : clas
     bool ReadOnly { get; set; }
     ValueTask<TAggregateRoot?> FindAsync(object[] keyValues, CancellationToken cancellationToken);
     Task<IReadOnlyList<TAggregateRoot>> ListAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<TAggregateRoot>> ListAsync(Expression<Func<TAggregateRoot, bool>> predicate);
+    Task<IReadOnlyList<TAggregateRoot>> ListAsync(Expression<Func<TAggregateRoot, bool>> predicate, CancellationToken cancellationToken);
     
     Task<TAggregateRoot> SingleAsync(CancellationToken cancellationToken);
     Task<TAggregateRoot> SingleAsync(Expression<Func<TAggregateRoot, bool>> predicate, CancellationToken cancellationToken);

@@ -52,9 +52,9 @@ public abstract class EFRepository<TAggregateRoot, TDbContext> : Repository<TAgg
         return await Items.ToListAsync(cancellationToken);
     }
 
-    public override async Task<IReadOnlyList<TAggregateRoot>> ListAsync(Expression<Func<TAggregateRoot, bool>> predicate)
+    public override async Task<IReadOnlyList<TAggregateRoot>> ListAsync(Expression<Func<TAggregateRoot, bool>> predicate, CancellationToken cancellationToken)
     {
-        return await Items.Where(predicate).ToListAsync();
+        return await Items.Where(predicate).ToListAsync(cancellationToken);
     }
 
     public override Task<TAggregateRoot> SingleAsync(CancellationToken cancellationToken)

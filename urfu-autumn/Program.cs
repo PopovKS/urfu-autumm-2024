@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using UrfuAutumn.Core.Domain;
 using UrfuAutumn.Core.Domain.Repositories;
 using UrfuAutumn.Core.Domain.SharedKernel.Storage;
@@ -10,6 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(x =>
+{
+    x.RegisterServicesFromAssemblyContaining<Program>();
+});
+
+builder.Services.AddDbContext<ServerDbContext>(config =>
+{
+    config.UseNpgsql(builder.Configuration.GetConnectionString("Server"));
+    config.EnableSensitiveDataLogging();
+});
+
+builder.Services.AddControllers();
 
 builder.Services.RegisterRepository<ICustomerRepository, CustomerRepository>();
 builder.Services.RegisterRepository<IOrderRepository, OrderRepository>();
@@ -23,18 +36,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+app.UseEndpoints(x =>
+{
+    x.MapControllers();
+});
+
 app.UseHttpsRedirection();
 app.Run();
-
-public class CustomerQuery
-{
-    private readonly IReadOnlyRepository<Customer> _readOnlyRepository;
-    private readonly IOrderRepository _orderRepository;
-
-
-    public CustomerQuery(IReadOnlyRepository<Customer> readOnlyRepository, IOrderRepository orderRepository)
-    {
-        _readOnlyRepository = readOnlyRepository;
-        _orderRepository = orderRepository;
-    }
-}
